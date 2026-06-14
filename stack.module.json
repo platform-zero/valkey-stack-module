@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "id": "valkey",
+  "repo": "valkey-stack-module",
+  "runtimeId": "valkey",
+  "lifecycle": "active",
+  "dependencies": [
+    "stack-foundation"
+  ],
+  "overlays": [
+    "stack.compose/valkey.yml",
+    "stack.config/valkey"
+  ]
+}
