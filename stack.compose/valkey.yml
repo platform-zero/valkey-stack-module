@@ -39,3 +39,8 @@ services:
       start_period: 15s
 volumes:
   valkey_acl:
+    driver: local
+    driver_opts:
+      type: bind
+      o: bind
+      device: ${STACK_VOLUME_ROOT}/valkey_acl
