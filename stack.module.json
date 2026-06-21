@@ -17,7 +17,9 @@
   "smokeUnsupportedReason": "requires generated bundle context, deployed networking, secrets, or service dependencies",
   "overlays": [
     "stack.compose/valkey.yml",
-    "stack.config/valkey"
+    "stack.config/valkey",
+    "stack.kotlin/test-runner/src/main/kotlin/org/webservices/testrunner/suites/ValkeyCachingLayerTests.kt",
+    "stack.kotlin/test-runner/src/main/kotlin/org/webservices/testrunner/suites/ValkeyDatabaseTests.kt"
   ],
   "testAssets": []
 }
