@@ -19,7 +19,8 @@
     "stack.compose/valkey.yml",
     "stack.config/valkey",
     "stack.kotlin/test-runner/src/main/kotlin/org/webservices/testrunner/suites/ValkeyCachingLayerTests.kt",
-    "stack.kotlin/test-runner/src/main/kotlin/org/webservices/testrunner/suites/ValkeyDatabaseTests.kt"
+    "stack.kotlin/test-runner/src/main/kotlin/org/webservices/testrunner/suites/ValkeyDatabaseTests.kt",
+    "stack.runtime.yaml"
   ],
   "testAssets": []
 }

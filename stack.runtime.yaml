@@ -1,0 +1,47 @@
+---
+schemaVersion: 1
+module: "valkey"
+target: "core"
+services:
+  valkey:
+    image: "valkey/valkey:8.1.5"
+    containerName: "valkey"
+    lifecycle: "daemon"
+    updatePolicy: "registry"
+    placement: "rootful"
+    environment:
+      VALKEY_PASSWORD: "${VALKEY_ADMIN_PASSWORD}"
+      VALKEY_SEAFILE_PASSWORD: "${VALKEY_SEAFILE_PASSWORD}"
+      VALKEY_MASTODON_PASSWORD: "${VALKEY_MASTODON_PASSWORD}"
+    networks:
+    - "valkey"
+    volumes:
+    - "redis_data:/data"
+    - "valkey_acl:/etc/valkey"
+    health:
+      test:
+      - "CMD-SHELL"
+      - "valkey-cli --user default -a \"$$VALKEY_PASSWORD\" ping >/dev/null && \\\n\
+        valkey-cli --user default -a \"$$VALKEY_PASSWORD\" --raw INFO persistence\
+        \ | awk -F: '$$1==\"loading\"{gsub(/\\r/, \"\", $$2); found=1; ready=($$2==\"\
+        0\")} END{exit (found && ready) ? 0 : 1}' && \\\nvalkey-cli --user default\
+        \ -a \"$$VALKEY_PASSWORD\" SET healthcheck:test \"$$RANDOM\" EX 5 >/dev/null\
+        \ && \\\nvalkey-cli --user default -a \"$$VALKEY_PASSWORD\" GET healthcheck:test\
+        \ >/dev/null && \\\nvalkey-cli --user default -a \"$$VALKEY_PASSWORD\" INFO\
+        \ replication | grep -q role:master\n"
+      interval: "5s"
+      timeout: "5s"
+      retries: 24
+      start_period: "15s"
+    entrypoint:
+    - "/bin/sh"
+    - "-c"
+    - "set -e\nmkdir -p /etc/valkey\ncat > /etc/valkey/users.acl <<EOF\nuser default\
+      \ on >$$VALKEY_PASSWORD ~* &* +@all\nuser seafile on >$$VALKEY_SEAFILE_PASSWORD\
+      \ ~* &* +@all\nuser mastodon on >$$VALKEY_MASTODON_PASSWORD ~* &* +@all\nEOF\n\
+      exec valkey-server --appendonly yes --dir /data --databases 16 --aclfile /etc/valkey/users.acl\n"
+    restart: "unless-stopped"
+networks: {}
+volumes:
+  valkey_acl:
+    hostPath: "${STACK_VOLUME_ROOT}/valkey_acl"
