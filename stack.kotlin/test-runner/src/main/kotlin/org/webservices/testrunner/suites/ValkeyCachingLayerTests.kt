@@ -306,10 +306,12 @@ test("Valkey: Service is reachable") {
                 if (valkeyPassword.isNotEmpty()) {
                     jedis.auth("default", valkeyPassword)
                 }
+                val key = uniqueCacheKey("test:dbsize")
+                jedis.set(key, "present")
                 val dbSize = jedis.dbSize()
-
-                require(dbSize >= 0) { "Database size should be non-negative" }
-                println("      ✓ Database contains $dbSize keys")
+                require(dbSize >= 1) { "Database size did not include the key written by this test" }
+                jedis.del(key)
+                println("      ✓ Database statistics included a newly written key ($dbSize total keys)")
             }
         } catch (e: Exception) {
             throw AssertionError("Valkey statistics failed: ${e.message}")
