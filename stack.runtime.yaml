@@ -4,7 +4,7 @@ module: "valkey"
 target: "core"
 services:
   valkey:
-    image: "valkey/valkey:8.1.5"
+    image: "valkey/valkey:8.1.5@sha256:7d94253109069f6cb2c9ac7b89d6fdee41b272ca82d525944f54f3c98ef285af"
     containerName: "valkey"
     lifecycle: "daemon"
     updatePolicy: "registry"
